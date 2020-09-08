@@ -1,0 +1,45 @@
+ <div class="container" style="margin-left: 0; margin-top: 100px; margin-right: 0;">
+    <div class="row">
+        <div class="col-sm-4" style="border: 1px solid black;">
+                <div class="container">
+                        <h1>Filtres</h1>
+                        <form (ngSubmit)="onSubmit()" #menuForm="ngForm">
+                          <div class="form-group">
+                            <label for="categories">Categories</label>
+                            <select class="form-control" id="categories"
+                            [(ngModel)]="model.categories" name="categories" #categorie="ngModel">
+                                <option *ngFor="let type of types" [value]="type">{{type}}</option>
+                            </select>
+                          </div>
+                          <div class="form-group">
+                            <label for="city">Lieu</label>
+                            <input type="text" class="form-control" id="city"
+                            [(ngModel)]="model.city" name="city" placeholder="Ville...">
+                          </div>
+                          <button type="submit" class="btn btn-success" [disabled]="!menuForm.form.valid">Filtrer</button>
+                        </form>
+                        <div [hidden]="!dataIsComming">
+                                <img src="assets/loading.gif" alt="loading" width="200px" height="200px"/>
+                        </div>
+                </div>
+        </div>
+        <div class="col-sm-8">
+            <h3>Events à venir </h3>
+            <div *ngFor="let event of events" style="margin-bottom: 100px">
+                <div class="container-flex" style="display: flex;">
+                  <div *ngIf="event.image" style="margin-right: 25px">
+                      <img [src]="event.image.medium.url"/>
+                  </div>
+                  <div>
+                    <h2>{{ event.title }}</h2>
+                    <h5>{{ event.start_time }}</h5>
+                    <p [innerHtml]="event.description"></p>
+                  </div>
+              </div>
+              <div style="z-index: 2; text-align: right; margin-top: -20px; margin-left: -80px;">
+                <a [routerLink]="['/event', event.id]" routerLinkActive="router-link-active" class="btn btn-success">En savoir +</a>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>

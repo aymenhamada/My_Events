@@ -1,0 +1,94 @@
+<div *ngIf="user">
+        <div class="container-fluid" style="margin-top: 100px">
+                <div class="row">
+                    <div class="col-md-6 d-flex">
+                        <div style="margin-right: 50px">
+                            {{user.name}}
+                            <div *ngIf="user.avatar">
+                                <img [src]="'assets/' + user.avatar" width="200px" height="200px"/>
+                            </div>
+                            <div *ngIf="user.facebookId == currentUserId">
+                                <div *ngIf="!user.avatar">
+                                    <img [src]="'https://graph.facebook.com/' + currentUserId + '/picture?type=large'" width="100px" height="100px"/>
+                                </div>
+                            </div>
+                            <div *ngIf="user.facebookId !== currentUserId">
+                                    <div *ngIf="!user.avatar">
+                                        <img [src]="'https://graph.facebook.com/' + user.facebookId + '/picture?type=large'" width="100px" height="100px"/>
+                                    </div>
+                            </div>
+                                <div *ngIf="user.facebookId == currentUserId">
+                                    <input (change)="onChange($event.target.files)" type="file"  name="photo" id="photo" accept="image/gif, image/png, image/jpeg" required>
+                                    <button (click)="uploadPicture($event)" [disabled]="!fileToUpload" class="btn btn-success">Changer de photo</button>
+                                    <div *ngIf="user.avatar">
+                                        <p>Use your <img src="assets/facebook.png" width="80px" height="80px" (click)="putBackFacebookPicture()" style="cursor: pointer;"/> picture</p>
+                                    </div>
+                                </div>
+                            </div>
+                        <div>
+                            <h5>{{user.pseudo}}</h5>
+                            <h2>Presentation:</h2>
+                            <p>{{user.description}}</p>
+                            <div *ngIf="user.facebookId == currentUserId">
+                                <button [hidden]="changeDescription" (click)="showDescription()" class="btn btn-success">Modifier la description</button>
+                                <div [hidden]="!changeDescription">
+                                    <form [formGroup]="form" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
+                                        <div class="form-group">
+                                            <label for="desciption">Description</label>
+                                            <textarea type="text" class="form-control" [value]="user.description || ''"  id="description"  formControlName="description"
+                                            name="description"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Submit</button>
+                                    </form>
+                                    <button (click)="showDescription()" class="btn btn-danger">Annuler</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div *ngIf="currentUserId == user.facebookId">
+                        <h3>Liste de vos sorties:</h3>
+                    </div>
+                    <div *ngIf="currentUserId !== user.facebookId">
+                        <h3>Liste des sorties de {{user.name}}: </h3>
+                    </div>
+                </div>
+                <div *ngIf="sorties" class="col-12">
+                    <div *ngFor="let sortie of sorties; index as i">
+                        <div style="display: flex;">
+                            <div *ngIf="sortie.images && sortie.images.image">
+                                <img [src]="sortie.images.image.medium.url"/>
+                            </div>
+                            <div *ngIf="!sortie.images">
+                                <img src="assets/party.jpeg" width="200px" height="200px"/>
+                            </div>
+                            <div>
+                                <h6>{{sortie.title}}</h6>
+                                <br/>
+                                <p>Nombre de participants : {{sortie.nombreParticipants}}</p>
+                                <div *ngIf="sortie.participants.includes(currentUser.pseudo) || sortie.creatorId == currentUserId">
+                                    <a [routerLink]="['/customEvent/' + sortie.urlID]"  ><button  class="btn btn-success">En savoir +</button></a>
+                                </div>
+                                <div *ngIf="user.facebookId !== currentUserId && sortie.isPublic && !sortie.participants.includes(currentUser.pseudo) && currentUserId !== sortie.creatorId">
+                                        <button (click)="joinEvent(sortie._id, i)" class="btn btn-success">Rejoindre la sorties</button>
+                                </div>
+                                <div *ngIf="user.facebookId  !== currentUserId && sortie.participants.includes(currentUser.pseudo)">
+                                    <p>Vous participez a cette évenements</p>
+                                </div>
+                                <div *ngIf="user.facebookId == currentUserId &&  user.facebookId == sortie.creatorId">
+                                    <button (click)="deleteEvent(sortie._id, i)" class="btn btn-danger">Annuler la sortie</button>
+                                </div>
+                                <div *ngIf="currentUserId !== sortie.creatorId && sortie.participants.includes(currentUser.pseudo) && currentUser.pseudo == user.pseudo">
+                                    <button (click)="leaveEvent(sortie._id, i)" class="btn btn-danger">Quitter l'évenements</button>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                  </div>
+            </div>
+        </div>
+</div>

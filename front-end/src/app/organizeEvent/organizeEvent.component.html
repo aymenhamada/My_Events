@@ -1,0 +1,73 @@
+
+<div class="row">
+    <div *ngIf="Event" class="col-8">
+        <h3>{{Event.title}}</h3>
+    </div>
+    <div *ngIf="weather" class="col-4">
+        <p>{{weather.description}}</p>
+        <img [src]="weather.iconLink"/> <h3>{{weather.moyenne}}°C</h3>
+    </div>
+</div>
+<div #map style="width: 100%; height: 450px"></div>
+<div *ngIf="sortie">
+    <div class="container-fluid">
+        <div class="row">
+            <div *ngIf="Event" class="col-4">
+                <h3>Participants: </h3>
+                <div class="upper">
+                    <div *ngFor="let user of Event.user">
+                        <div>
+                            <img [src]="user.avatar" style="width: 100px;height: 100px; border-radius: 25px;"/>
+                            <p>{{user.pseudo}}</p>
+                            <img *ngIf="user.facebookId == sortie.creatorId" style="width: 25px; height: 25px;" src="assets/king.png" alt="king"/>
+                            <p *ngIf="user.facebookId == sortie.creatorId">HOST</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-8">
+                <div *ngIf="Event && Event.message && currentUser" style="height: 500px; width: 100%; overflow:scroll;">
+                    <div *ngFor="let test of Event.message">
+                        <div *ngIf="test.pseudo == currentUser.pseudo">
+                            <div style="display: flex; background-color:lightblue; margin-left: 250px; border-radius: 50px;">
+                                    <div>
+                                            <p>{{test.message}}</p>
+                                    </div>
+                                    <div>
+                                        
+                                    </div>
+                            </div>
+                        </div>
+                        <div *ngIf="test.pseudo !== currentUser.pseudo">
+                            <div style="display: flex; background-color:lightgrey; margin-right: 250px; border-radius: 50px; margin-bottom: 5px;">
+                                    <div>
+                                        
+                                    </div>
+                                    <div>
+                                        <a [routerLink]="['/profile', test.pseudo]">{{test.pseudo}}</a>: {{test.message}}
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <form [formGroup]="form" (ngSubmit)="onSubmit()" (keyup.enter)="onSubmit()">
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea type="text" class="form-control"  formControlName="message"
+                        name="message"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="suggestPlaces">
+    <h3>Places suggéres aux alentours de l'évenements</h3>
+    <div *ngFor="let suggestPlace of suggestPlaces">
+        <h4>{{suggestPlace.title}}</h4>
+        <img [src]="suggestPlace.icon" alt="place"> <p>{{suggestPlace.category.title}}</p>
+        <p [innerHtml]="suggestPlace.vicinity"></p>
+    </div>
+</div>

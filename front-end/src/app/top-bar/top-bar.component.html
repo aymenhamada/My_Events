@@ -1,0 +1,29 @@
+<header id="header" class="sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark font-italic">
+      <div class="container">
+        <a href="/" class="navbar-brand">
+          <h2 class="font-italic">
+            My<span class="badge badge-primary shadow">EVENTS</span>
+          </h2>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navlinks">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navlinks">
+            <div *ngIf="user">
+                <p style="color:aliceblue">{{user.pseudo}}</p>
+                <div *ngIf="user.avatar">
+                    <a [routerLink]="['/profile/me']"><img [src]="'assets/' + user.avatar" width="100px" height="100px"/></a>
+                  </div>
+                  <div *ngIf="!user.avatar">
+                      <a [routerLink]="['/profile/me']"><img [src]="'https://graph.facebook.com/' + currentUserId + '/picture?type=large'" width="100px" height="100px" style="border-radius: 50px"/></a>
+                  </div>
+                <button class="btn btn-danger" (click)="logout()">Deconnexion</button>
+            </div>
+            <div *ngIf="!user">
+                <a href="http://localhost:4242/auth/facebook"><img src="assets/login.png" height="100px"></a>
+              </div>
+        </div>
+      </div>
+    </nav>
+</header>

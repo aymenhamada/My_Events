@@ -1,0 +1,56 @@
+<div *ngIf="event">
+    <div [hidden]="createEvent">
+        <div class="container-fluid" style="margin-top: 100px">
+            <div class="row">
+                <div class="col-md-6 d-flex">
+                    <div style="margin-right: 50px">
+                        {{event.title}}
+                        <div *ngIf="event.images && event.images.image">
+                            <img [src]="event.images.image.medium.url"/>
+                        </div>
+                        <div *ngIf="!event.images">
+                                <img src="/assets/party.jpeg"/>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Date: {{event.start_time}}</p>
+                        <p>Lieux: {{event.city}}, {{event.address}}</p>
+                        <div *ngIf="logged">
+                            <button class="btn btn-success" (click)="onClick()">Organiser une sorties</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8" style="margin-top: 70px">
+                    <h3>Description event:</h3>
+                    <p [innerHtml]="event.description"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div [hidden]="!createEvent">
+                <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
+                        <div class="form-group">
+                          <label for="participants">Participants</label>
+                          <select *ngIf="user" class="form-control" id="participants"
+                          [(ngModel)]="sorties.participants" name="participants" #participants="ngModel" required
+                          (change)="onChange($event)">
+                            <option *ngFor="let use of user" [value]="use.pseudo">{{use.pseudo}}</option>
+                          </select>
+                        </div>
+                        <div *ngIf="participants">
+                            <div *ngFor="let participant of participants">
+                                <p>{{participant}} <span [id]="participant" (click)="removeParticipant($event)">X</span></p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                          <label for="visibility">Visibilité</label>
+                          <select class="form-control" id="visibility"
+                          [(ngModel)]="sorties.isPublic" name="isPublic" required>
+                            <option value="false">Privée</option>
+                            <option value="true">Public</option>
+                          </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">Créer</button>
+                </form>
+    </div>
+</div>
